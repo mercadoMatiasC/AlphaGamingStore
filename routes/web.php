@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductAnswersController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductQuestionController;
@@ -70,6 +71,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/Carrito/Modificar', [CartController::class, 'updateItemQuantity'])->name('cart.updateItemQuantity');
     Route::patch('/Carrito/Quitar', [CartController::class, 'removeCartItem'])->name('cart.removeCartItem');
     Route::patch('/Carrito/ModificarDireccion', [CartController::class, 'updatePreferredAddress'])->name('cart.updatePreferredAddress');
+});
+
+//-- ORDER --
+Route::middleware('auth')->group(function () {
+    Route::post ('/GenerarOrden', [OrderController::class, 'store'])->name('order.store');
 });
 
 require __DIR__.'/auth.php';

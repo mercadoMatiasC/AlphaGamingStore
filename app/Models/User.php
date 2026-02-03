@@ -74,11 +74,15 @@ class User extends Authenticatable
         return !empty($this->personal_id);
     }
 
-    public function shipping_addresses(){
-        return $this->hasMany(ShippingAddress::class);
+    public function orders(){
+        return $this->hasMany(Order::class);
     }
 
     public function activeAddresses(){
         return $this->hasMany(ShippingAddress::class)->where('active', true);
+    }
+
+    public function shipping_addresses(){
+        return $this->hasMany(ShippingAddress::class);
     }
 }

@@ -9,10 +9,10 @@ use Illuminate\Http\Request;
 class HomeController extends Controller{
 
     public function index(){
-        $products = Product::where('active', true)->where('product_category_id', '!=', ProductCategory::BUILT_PC)->with(['type', 'category'])->latest()->limit(4)->get();
+        $products = Product::where('active', true)->where('stock', '>', 0)->where('product_category_id', '!=', ProductCategory::BUILT_PC)->with(['type', 'category'])->latest()->limit(4)->get();
         $categories = ProductCategory::all();
 
-        $builtPCs = Product::where('active', true)->where('product_category_id', ProductCategory::BUILT_PC)->with(['type', 'category'])->latest()->limit(4)->get();
+        $builtPCs = Product::where('active', true)->where('stock', '>', 0)->where('product_category_id', ProductCategory::BUILT_PC)->with(['type', 'category'])->latest()->limit(4)->get();
 
         return view('main.index', [
             'products' => $products,

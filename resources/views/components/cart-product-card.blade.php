@@ -25,7 +25,7 @@
                     <x-forms.input name="quantity" type="number" id="quantity-input" data-input-counter value="{{ $item['quantity'] }}" min="0" max="{{ $item['product']->stock }}" class="border-none" required />
                     <input type="hidden" name="product_id" value="{{ $item['product']->id }}" />
                 </div>
-                <x-forms.button class="mx-auto" :anchor="0">
+                <x-forms.button class="mx-auto">
                     Actualizar
                 </x-forms.button>
             </form>
@@ -33,7 +33,7 @@
                 @csrf
                 @method('PATCH')
                 <input type="hidden" name="product_id" value="{{ $item['product']->id }}" />
-                <x-forms.button class="w-full" colour="red" :anchor="0">
+                <x-forms.button class="w-full" colour="red">
                     Quitar
                 </x-forms.button>
             </form>

@@ -36,7 +36,7 @@ class Cart {
 
         // Re-index the array
         $this->products = array_values($this->products);
-    }    
+    }
 
     public function updateQuantity($product_id, $new_quantity){
         $found = $this->inCart($product_id);

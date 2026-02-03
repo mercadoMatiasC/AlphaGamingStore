@@ -8,6 +8,7 @@ use App\Services\ShippingCostService;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
@@ -15,13 +16,13 @@ class CartController extends Controller
         if (!session()->has('cart'))
             session()->put('cart', new Cart());
 
-        if (auth()->check() && auth()->user()->activeAddresses->isNotEmpty() && !session()->has('preferred_address_id'))
-            session()->put('preferred_address_id', auth()->user()->activeAddresses->first()->id);
+        if (Auth::check() && Auth::user()->activeAddresses->isNotEmpty() && !session()->has('preferred_address_id'))
+            session()->put('preferred_address_id', Auth::user()->activeAddresses->first()->id);
     }
 
     public function index(){
         $this->initCart();
-        $user_addresses = auth()->user()->activeAddresses;
+        $user_addresses = Auth::user()->activeAddresses;
 
         if (!$user_addresses->isEmpty()){
             $preferred_address = $user_addresses->firstWhere('id', session('preferred_address_id'));
@@ -99,7 +100,7 @@ class CartController extends Controller
             Session::put('cart', $cart);
         }
 
-        return back();
+        return redirect()->route('cart.index');
     }
 
     public function removeCartItem(Request $request){
