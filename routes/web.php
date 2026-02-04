@@ -75,7 +75,10 @@ Route::middleware('auth')->group(function () {
 
 //-- ORDER --
 Route::middleware('auth')->group(function () {
+    Route::get  ('/Ordenes', [OrderController::class, 'index'])->name('order.index');
     Route::post ('/GenerarOrden', [OrderController::class, 'store'])->name('order.store');
+    
+    Route::post ('/Orden/{order}', [OrderController::class, 'show'])->name('order.show');
 });
 
 require __DIR__.'/auth.php';

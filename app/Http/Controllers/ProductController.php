@@ -22,12 +22,10 @@ class ProductController extends Controller
         
         $categories = ProductCategory::all();
 
-        $query = Product::query()
-            ->where('active', true)
-            ->with(['type', 'category']);
+        $query = Product::query()->where('active', true)->with(['type', 'category']);
 
         //PRODUCTS WITH DISCOUNT?
-        if ($request->boolean('ofertas')) 
+        if ($request->has('ofertas') && $request->boolean('ofertas'))
             $query->where('discount', '>', 0);
 
         //LOGIC GROUPS
@@ -64,7 +62,7 @@ class ProductController extends Controller
             });
         
         //QUERY BUILD
-        $products = $query->where('active', true)->with(['type', 'category'])->latest()->paginate(8)->withQueryString();
+        $products = $query->with(['type', 'category'])->latest()->paginate(8)->withQueryString();
 
         return view('product.index', ['products' => $products, 'categories' => $categories, 'category' => $category]);
     }

@@ -46,4 +46,14 @@ class Product extends Model
     public function getFDiscountedAttribute(){
         return number_format($this->price - $this->finalPrice(), 0, '.', ',');
     }
+
+    public function decreaseStock($quantity){
+        if ($quantity <= 0) 
+            throw new \InvalidArgumentException('Must be a positive amount.');
+
+        if ($this->stock < $quantity) 
+            throw new \DomainException('Not enough stock!.');
+        else
+            $this->decrement('stock', $quantity);
+    }
 }

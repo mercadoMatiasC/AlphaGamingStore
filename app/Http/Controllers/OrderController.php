@@ -6,15 +6,17 @@ use App\Models\Order;
 use App\Services\PlaceOrderService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth as FacadesAuth;
 
 class OrderController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        //
+    public function index(){
+        $orders = Auth::user()->orders()->latest()->paginate(4);
+
+        return view('order.index', ['orders' => $orders,]);
     }
 
     /**
@@ -30,16 +32,16 @@ class OrderController extends Controller
                 shippingAddressId: session('preferred_address_id')
             );
 
-            return redirect()->route('Home');
+            return redirect()->route('order.index');
         }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Order $order)
-    {
-        //
+    public function show(Order $order){
+
+        return view('order.show', ['order' => $order, 'items' => $order->orderItems,]);
     }
 
     /**

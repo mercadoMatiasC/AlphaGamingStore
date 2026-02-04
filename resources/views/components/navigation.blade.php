@@ -27,6 +27,10 @@
                     {{ __('Log Out') }}
                 </x-dropdown-link>
             </form>
+
+            <x-dropdown-link :href="route('order.index')">
+                Mis pedidos
+            </x-dropdown-link>
         </x-slot>
     </x-dropdown>
 </div>

@@ -13,30 +13,40 @@ class PlaceOrderService
     public static function run(User $user, Cart $cart, int $shippingAddressId){
         DB::transaction(function () use ($user, $cart, $shippingAddressId) {
 
-            $address = ShippingAddress::findOrFail($shippingAddressId);
-
+            $address = $user->activeAddresses()->where('id', $shippingAddressId)->firstOrFail();
             $products = Product::whereIn('id', collect($cart->products)->pluck('product_id'))->get()->keyBy('id');
 
             $order = $user->orders()->create([
-                'status' => 'Pending',
                 'address_city' => $address->city,
                 'address' => $address->address_street.' '.$address->address_number,
-                'receiptRoute' => null,
             ]);
+
+            $load = [];
 
             foreach ($cart->products as $item) {
                 $product = $products[$item->product_id];
+                $quantity = $item->quantity;
 
                 $order->orderItems()->create([
                     'product_id' => $product->id,
-                    'quantity' => $item->quantity,
-                    'snapshot_price' => $product->price,
+                    'quantity' => $quantity,
+                    'snapshot_price' => $product->finalPrice(),
                 ]);
 
-                $product->decrement('stock', $item->quantity);
+                $load[] = [
+                    'category_id' => $product->product_category_id,
+                    'quantity' => $quantity,
+                ];
+
+                $product->decreaseStock($item->quantity);
             }
 
+            $order->shipping_cost = ShippingCostService::getShippingCost($address->province_id, $load);
+            $order->save();
+
             session()->forget('cart');
+
+            return $order;
         });
     }
 }

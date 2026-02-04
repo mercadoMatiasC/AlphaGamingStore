@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('address_city');
             $table->string('address'); //address_street+address_number
             $table->string('receiptRoute')->nullable();
+            $table->float('shipping_cost')->nullable();
             $table->timestamps();
         });
     }
