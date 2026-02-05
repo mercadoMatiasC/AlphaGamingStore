@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Services\CancelOrderService;
 use App\Services\PlaceOrderService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Auth as FacadesAuth;
+use Illuminate\Support\Facades\Gate;
 
 class OrderController extends Controller
 {
@@ -16,7 +17,7 @@ class OrderController extends Controller
     public function index(){
         $orders = Auth::user()->orders()->latest()->paginate(4);
 
-        return view('order.index', ['orders' => $orders,]);
+        return view('order.index', ['orders' => $orders, 'statuses' => config('order_statuses'),]);
     }
 
     /**
@@ -32,7 +33,7 @@ class OrderController extends Controller
                 shippingAddressId: session('preferred_address_id')
             );
 
-            return redirect()->route('order.index');
+            return redirect()->route('order.index')->with('message', '¡Compra realizada con éxito!');
         }
     }
 
@@ -40,8 +41,20 @@ class OrderController extends Controller
      * Display the specified resource.
      */
     public function show(Order $order){
+        Gate::authorize('view', $order);
 
-        return view('order.show', ['order' => $order, 'items' => $order->orderItems,]);
+        $tracking_PLACEHOLDER = [
+            'DD/MM/AAAA | DETALLE',
+            '05/01/2029 | Pedido despachado - https://oca.com.ar/Seguimiento/Paquetes/0000000000',
+            '03/01/2029 | Armado del pedido',
+            '03/01/2029 | Comprobante aprobado',
+            '02/01/2029 | Confirmación de reserva',
+            '02/01/2029 | Ingreso del pedido',
+        ];
+
+        $items = $order->orderItems()->with('product')->paginate(3);
+
+        return view('order.show', ['order' => $order,'items' => $items, 'statuses' => config('order_statuses'), 'tracking_status' => $tracking_PLACEHOLDER, ]);
     }
 
     /**
@@ -58,5 +71,13 @@ class OrderController extends Controller
     public function update(Request $request, Order $order)
     {
         //
+    }
+
+    // -- NON CRUD METHODS --
+    public function cancel(Order $order){
+        Gate::authorize('cancel', $order);
+        CancelOrderService::run(Auth::user(), $order);
+
+        return redirect()->route('order.show', $order)->with('success', 'Orden cancelada correctamente!');
     }
 }

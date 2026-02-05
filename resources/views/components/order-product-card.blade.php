@@ -9,7 +9,7 @@
         <div class="flex justify-between">
             <a href="/Producto/{{ $item->product_id }}">
                 <p class="font-semibold">
-                    {{ $item->product->name }} 
+                    {{ $item->quantity }}x {{ $item->product->name }} 
                 </p>
             </a>
             <div class="flex flex-col gap-2">

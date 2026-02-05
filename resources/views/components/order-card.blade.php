@@ -1,4 +1,4 @@
-@props(['order'])
+@props(['order', 'statuses'])
 
 <div class="flex flex-row bg-black/40 items-center gap-5 rounded-lg p-5">
     <div class="flex flex-col w-full space-y-3">
@@ -6,9 +6,14 @@
             <p class="font-semibold">
                 Número de orden: {{ $order->id }} | {{ $order->created_at }}
             </p>
-            <p>
-                Estado: {{ $order->status }}
-            </p>
+            <div class="flex flex-row justify-between gap-1">
+                <p>
+                    Estado:
+                </p>
+                <p class="font-semibold text-{{ $statuses[$order->status]['colour'] }}-600">
+                    {{ $statuses[$order->status]['status'] }}
+                </p>
+            </div>
         </div>
         <div class="flex justify-between">
             <p>
@@ -19,12 +24,9 @@
             <p class="font-bold text-xl">
                 Total: ${{ number_format($order->getTotalAndShipping(), 0, '.', ',') }}                
             </p>  
-            <form class="flex flex-row gap-2" action="{{ route('order.show', $order->id) }}" method="POST">
-                @csrf
-                <x-forms.button class="w-full">
-                    Ver orden
-                </x-forms.button>
-            </form>
+            <x-forms.button class="w-[20%]" :anchor="1" href="/Orden/{{ $order->id }}">
+                Ver orden
+            </x-forms.button>
         </div>
     </div>
 </div>

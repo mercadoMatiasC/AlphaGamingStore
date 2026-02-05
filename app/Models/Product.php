@@ -56,4 +56,11 @@ class Product extends Model
         else
             $this->decrement('stock', $quantity);
     }
+
+    public function increaseStock($quantity){
+        if ($quantity <= 0) 
+            throw new \InvalidArgumentException('Must be a positive amount.');
+        else
+            $this->increment('stock', $quantity);
+    }
 }

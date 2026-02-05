@@ -83,10 +83,10 @@
                             </p>
                         </div>
     
-                        <div class="flex justify-center items-center">
-                            <form class="w-full mx-auto" method="POST" action="{{ route('order.store') }}">
+                        <div>
+                            <form class="flex justify-end" method="POST" action="{{ route('order.store') }}">
                                 @csrf
-                                <x-forms.button href="#" colour="purple" class="col-span-1">
+                                <x-forms.button class="w-full" href="#" colour="purple" class="col-span-1">
                                     Pagar
                                 </x-forms.button>
                             </form>

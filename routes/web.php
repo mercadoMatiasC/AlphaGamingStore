@@ -77,8 +77,9 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get  ('/Ordenes', [OrderController::class, 'index'])->name('order.index');
     Route::post ('/GenerarOrden', [OrderController::class, 'store'])->name('order.store');
-    
-    Route::post ('/Orden/{order}', [OrderController::class, 'show'])->name('order.show');
+
+    Route::get  ('/Orden/{order}', [OrderController::class, 'show'])->name('order.show');
+    Route::post ('/Orden/{order}/Cancel', [OrderController::class, 'cancel'])->name('order.cancel');
 });
 
 require __DIR__.'/auth.php';
