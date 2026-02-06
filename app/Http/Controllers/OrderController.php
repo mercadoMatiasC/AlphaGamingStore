@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\User;
 use App\Services\CancelOrderService;
 use App\Services\PlaceOrderService;
 use Illuminate\Http\Request;
@@ -15,9 +16,10 @@ class OrderController extends Controller
      * Display a listing of the resource.
      */
     public function index(){
+        $user = Auth::user();
         $orders = Auth::user()->orders()->latest()->paginate(4);
 
-        return view('order.index', ['orders' => $orders, 'statuses' => config('order_statuses'),]);
+        return view('order.index', ['orders' => $orders, 'statuses' => config('order_statuses'), 'user' => $user]);
     }
 
     /**
@@ -43,33 +45,23 @@ class OrderController extends Controller
     public function show(Order $order){
         Gate::authorize('view', $order);
 
-        $tracking_PLACEHOLDER = [
-            'DD/MM/AAAA | DETALLE',
-            '05/01/2029 | Pedido despachado - https://oca.com.ar/Seguimiento/Paquetes/0000000000',
-            '03/01/2029 | Armado del pedido',
-            '03/01/2029 | Comprobante aprobado',
-            '02/01/2029 | Confirmación de reserva',
-            '02/01/2029 | Ingreso del pedido',
-        ];
-
+        $tracking_statuses = $order->orderTrackingStatuses;
         $items = $order->orderItems()->with('product')->paginate(3);
 
-        return view('order.show', ['order' => $order,'items' => $items, 'statuses' => config('order_statuses'), 'tracking_status' => $tracking_PLACEHOLDER, ]);
+        return view('order.show', ['order' => $order,'items' => $items, 'statuses' => config('order_statuses'), 'tracking_statuses' => $tracking_statuses,]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Order $order)
-    {
+    public function edit(Order $order){
         //
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Order $order)
-    {
+    public function update(Request $request, Order $order){
         //
     }
 
@@ -78,6 +70,28 @@ class OrderController extends Controller
         Gate::authorize('cancel', $order);
         CancelOrderService::run(Auth::user(), $order);
 
+        $order->addTrackingStatus('La orden ha sido cancelada por el cliente.');
+
         return redirect()->route('order.show', $order)->with('success', 'Orden cancelada correctamente!');
+    }
+
+    public function clientIndex(User $user){
+        $orders = $user->orders()->latest()->paginate(4);
+
+        return view('order.index', ['orders' => $orders, 'statuses' => config('order_statuses'), 'user' => $user,]);
+    }
+
+    public function setTrackingURL(Order $order){
+        $request = request();
+
+        //VALIDATE
+        $validatedInput = $request->validate([
+            'shipping_tracking_url' => 'max:128',
+        ]);
+
+        $order->update($validatedInput);
+        
+        //REDIRECT
+        return back();
     }
 }

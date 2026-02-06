@@ -44,6 +44,8 @@ class PlaceOrderService
             $order->shipping_cost = ShippingCostService::getShippingCost($address->province_id, $load);
             $order->save();
 
+            $order->addTrackingStatus('Ingreso del pedido.');
+
             session()->forget('cart');
 
             return $order;

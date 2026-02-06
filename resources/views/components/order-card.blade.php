@@ -4,7 +4,7 @@
     <div class="flex flex-col w-full space-y-3">
         <div class="flex justify-between">
             <p class="font-semibold">
-                Número de orden: {{ $order->id }} | {{ $order->created_at }}
+                Orden: #{{ $order->id }} | {{ $order->created_at }}
             </p>
             <div class="flex flex-row justify-between gap-1">
                 <p>
@@ -18,13 +18,13 @@
         <div class="flex justify-between">
             <p>
                 Dirección: {{ $order->address_city.' - '.$order->address }}
-            </p> 
+            </p>
         </div>
         <div class="flex flex-row justify-between items-center">
             <p class="font-bold text-xl">
                 Total: ${{ number_format($order->getTotalAndShipping(), 0, '.', ',') }}                
             </p>  
-            <x-forms.button class="w-[20%]" :anchor="1" href="/Orden/{{ $order->id }}">
+            <x-forms.button class="lg:w-[20%]" :anchor="1" href="/Orden/{{ $order->id }}">
                 Ver orden
             </x-forms.button>
         </div>

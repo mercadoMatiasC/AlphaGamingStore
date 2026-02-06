@@ -2,7 +2,7 @@
     return [
         0  =>  [
                 'status' => 'Pendiente',
-                'colour' => 'yellow'
+                'colour' => 'orange'
             ],
         1  =>  [
                 'status' => 'Pagado',
@@ -11,5 +11,9 @@
         2  =>  [
                 'status' => 'Cancelado',
                 'colour' => 'red'
+            ],
+        3  =>  [
+                'status' => 'Entregado',
+                'colour' => 'green'
             ],
     ];

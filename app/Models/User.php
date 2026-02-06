@@ -85,4 +85,16 @@ class User extends Authenticatable
     public function shipping_addresses(){
         return $this->hasMany(ShippingAddress::class);
     }
+
+    public function isAdmin(): bool {
+        return $this->role->id === 2;
+    }
+
+    public function isOwner(): bool {
+        return $this->role->id === 1;
+    }
+
+    public function isStaff(): bool {
+        return $this->isAdmin() || $this->isOwner();
+    }
 }

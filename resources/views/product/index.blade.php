@@ -22,7 +22,7 @@
                         <x-product-card :product="$product"/>
                     @endforeach
                 @else      {{-- NO RESULTS! --}}  
-                    <div class="col-span-4 mb-20">        
+                    <div class="col-span-4 mb-20 mx-auto">        
                         <h1 class="text-2xl font-bold">¡Aún no hay productos con esa descripción!</h1>
                     </div>
                 @endif

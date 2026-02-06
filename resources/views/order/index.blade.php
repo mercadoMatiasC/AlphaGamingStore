@@ -1,4 +1,7 @@
 <x-layout title="Pedidos">
+    {{-- ADMIN --}}
+    <x-admin-bar />
+
     @if (session('message'))
         <script>
             alert("{{ session('message') }}");
@@ -8,6 +11,9 @@
          <div class="mx-auto w-full gap-3 p-5 xl:w-3/4">  
             <x-section-header>
                 Pedidos
+                    @anyrole(['owner', 'admin']) 
+                        ({{ 'ID: '.$user->id.' - '.$user->name }})
+                    @endanyrole
             </x-section-header>      
             <x-divider class="lg:hidden" />
 
@@ -22,7 +28,7 @@
                         {{ $orders->links() }}
                     @else      {{-- NO ORDERS! --}}  
                         <div class="col-span-4 mb-20 text-center">        
-                            <h1 class="text-2xl font-bold">¡Aún no has hecho ordenes de compra!</h1>
+                            <h1 class="text-2xl font-bold">¡Aún no ha hecho ordenes de compra!</h1>
                         </div>
                     @endif
                 </div>

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('address'); //address_street+address_number
             $table->string('receiptRoute')->nullable();
             $table->float('shipping_cost')->nullable();
+            $table->string('shipping_tracking_url')->nullable();
             $table->integer('status');
             $table->timestamps();
         });

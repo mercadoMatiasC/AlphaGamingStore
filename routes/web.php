@@ -3,6 +3,7 @@
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\OrderTrackingStatusController;
 use App\Http\Controllers\ProductAnswersController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductQuestionController;
@@ -78,8 +79,21 @@ Route::middleware('auth')->group(function () {
     Route::get  ('/Ordenes', [OrderController::class, 'index'])->name('order.index');
     Route::post ('/GenerarOrden', [OrderController::class, 'store'])->name('order.store');
 
+     Route::middleware(['auth', 'active', 'role:admin,owner'])->group(function () {
+        
+        Route::get  ('/Ordenes/{user}', [OrderController::class, 'clientIndex'])->name('order.clientIndex');
+        Route::patch('/Orden/{order}/AgregarSeguimiento', [OrderController::class, 'setTrackingURL'])->name('order.setTrackingURL');
+    });
+
     Route::get  ('/Orden/{order}', [OrderController::class, 'show'])->name('order.show');
-    Route::post ('/Orden/{order}/Cancel', [OrderController::class, 'cancel'])->name('order.cancel');
+    Route::post ('/Orden/{order}/Cancelar', [OrderController::class, 'cancel'])->name('order.cancel');
+});
+
+//-- TRACKING STATUS --
+Route::middleware(['auth', 'active', 'role:admin,owner'])->group(function () {
+    Route::post  ('/Orden/{order}/AgregarEstado', [OrderTrackingStatusController::class, 'store'])->name('ordertrackingstatus.store');
+    Route::delete('/EstadoEnvio/{status}/Eliminar', [OrderTrackingStatusController::class, 'destroy'])->name('ordertrackingstatus.destroy');
+    Route::patch ('/EstadoEnvio/{status}/Actualizar', [OrderTrackingStatusController::class, 'update'])->name('ordertrackingstatus.update');
 });
 
 require __DIR__.'/auth.php';

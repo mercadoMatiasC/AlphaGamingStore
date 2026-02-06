@@ -40,7 +40,7 @@ class UserSeeder extends Seeder
             'profile_imageRoute' => 'users/3/1.webp',
             'personal_id' => NULL,
             'account_status' => true,
-            'role_id' => '2',
+            'role_id' => '3',
         ]);
 
         User::factory()->create([
@@ -50,7 +50,7 @@ class UserSeeder extends Seeder
             'profile_imageRoute' => 'users/4/1.webp',
             'personal_id' => NULL,
             'account_status' => true,
-            'role_id' => '2',
+            'role_id' => '3',
         ]);
     }
 }

@@ -9,9 +9,11 @@ class Order extends Model
     protected $attributes = [
         'shipping_cost' => 0,
         'status' => 0,
-        'receiptRoute' => null,
+        'receiptRoute' => NULL,
+        'shipping_tracking_url' => NULL
     ];
 
+    // -- RELATIONSHIPS --
     public function user(){
         return $this->belongsTo(User::class);
     }
@@ -20,6 +22,11 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+    public function orderTrackingStatuses(){
+        return $this->hasMany(OrderTrackingStatus::class)->orderBy('created_at', 'desc');
+    }
+
+    // -- OTHER METHODS --
     public function getTotal(){
         $total = 0;
         $items = $this->orderItems;
@@ -28,6 +35,10 @@ class Order extends Model
             $total += $item->snapshot_price*$item->quantity;
         
         return $total;
+    }
+
+    public function addTrackingStatus($details){
+        $this->orderTrackingStatuses()->create(['details' => $details]);
     }
 
     public function getTotalAndShipping(){
