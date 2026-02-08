@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\User;
 use App\Services\CancelOrderService;
 use App\Services\PlaceOrderService;
+use DomainException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -28,7 +29,8 @@ class OrderController extends Controller
     public function store(Request $request){
         if (!session()->has('cart')) 
             return redirect()->route('cart.index');
-        else{
+
+        try {
             PlaceOrderService::run(
                 user: Auth::user(),
                 cart: session('cart'),
@@ -36,6 +38,10 @@ class OrderController extends Controller
             );
 
             return redirect()->route('order.index')->with('message', '¡Compra realizada con éxito!');
+        } catch (DomainException $e) {
+            $error = $e->getMessage();
+            //dd($error);
+            return redirect()->route('cart.index')->with('error', (String) $error);
         }
     }
 

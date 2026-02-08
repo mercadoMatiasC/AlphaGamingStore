@@ -56,7 +56,7 @@
                         <p class="text-green-500">
                             {{ $product->stock }} unidad/es disponible/s.
                         </p>
-                        <form class="flex flex-row h-1/2 gap-2" action="{{ route('cart.addCartItem') }}" method="POST">
+                        <form class="flex flex-row h-1/2 gap-2" action="{{ route('cart.addCartItem') }}" method="POST" data-idempotent>
                             @csrf
                             <div class="relative flex items-center max-w-[9rem] shadow-xs rounded-base">
                                 <x-forms.number-button id="decrement-button" data-input-counter-decrement="quantity-input">-</x-forms.number-button>
@@ -64,7 +64,7 @@
                                 <x-forms.number-button id="increment-button" data-input-counter-increment="quantity-input">+</x-forms.number-button>
                                 <input type="hidden" name="product_id" value="{{ $product->id }}" />
                             </div>
-                            <x-forms.button class="mx-auto" :anchor="0">
+                            <x-forms.button class="mx-auto">
                                 Agregar al Carrito
                             </x-forms.button>
                         </form>
@@ -120,7 +120,7 @@
                     </x-section-header>
                     <x-divider />
                     @role('customer')
-                        <form action="/Preguntar/{{ $product->id }}/" method="POST">
+                        <form action="/Preguntar/{{ $product->id }}/" method="POST" data-idempotent>
                             @csrf
                             <x-forms.textarea placeholder="Preguntanos lo que quieras sobre el producto..." name="question" class="h-32" required></x-forms.textarea>
                             <div class="w-full flex items-end justify-end mt-4">

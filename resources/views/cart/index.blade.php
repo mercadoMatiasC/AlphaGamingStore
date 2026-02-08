@@ -9,6 +9,12 @@
                     Carrito
                 </x-section-header> 
                 <div class="mt-6 flex flex-col gap-3">
+                    @if (session('error'))
+                        <x-error-card>
+                            {{ session('error') }}
+                        </x-error-card>
+                    @endif
+                    
                     @if (!empty($items))
                         @foreach($items as $item)
                             <x-cart-product-card :item="$item" />
@@ -84,7 +90,7 @@
                         </div>
     
                         <div>
-                            <form class="flex justify-end" method="POST" action="{{ route('order.store') }}">
+                            <form class="flex justify-end" method="POST" action="{{ route('order.store') }}" data-idempotent>
                                 @csrf
                                 <x-forms.button class="w-full" href="#" colour="purple" class="col-span-1">
                                     Pagar

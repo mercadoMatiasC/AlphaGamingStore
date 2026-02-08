@@ -52,7 +52,7 @@ class Product extends Model
             throw new \InvalidArgumentException('Must be a positive amount.');
 
         if ($this->stock < $quantity) 
-            throw new \DomainException('Not enough stock!.');
+            throw new \DomainException("No hay stock suficiente para {$this->name}. Hay {$this->stock} unidad/es disponibles.");
         else
             $this->decrement('stock', $quantity);
     }

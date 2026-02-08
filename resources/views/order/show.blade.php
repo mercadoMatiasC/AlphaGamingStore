@@ -26,7 +26,7 @@
                         <h1 class="text-xl">
                             Detalles de orden
                         </h1>                        
-                        <form method="POST" action="{{ route('order.cancel', $order) }}">
+                        <form method="POST" action="{{ route('order.cancel', $order) }}" data-idempotent>
                             @csrf
                             <x-forms.button class="w-full" colour="red" onclick="return confirm('¿Esta seguro de que quiere cancelar esta orden?')">
                                 Cancelar orden
@@ -135,7 +135,7 @@
 </x-layout>
 
 <x-modal name="set-tracking-url" focusable class="bg-transparent">
-    <form method="POST" action="{{ route('order.setTrackingURL', $order) }}" class="p-6 bg-black">
+    <form method="POST" action="{{ route('order.setTrackingURL', $order) }}" class="p-6 bg-black" data-idempotent>
         @csrf
         @method('PATCH')
 
@@ -164,7 +164,7 @@
 </x-modal>
 
 <x-modal name="add-order-status" focusable class="bg-transparent">
-    <form method="POST" action="{{ route('ordertrackingstatus.store', $order) }}" class="p-6 bg-black">
+    <form method="POST" action="{{ route('ordertrackingstatus.store', $order) }}" class="p-6 bg-black" data-idempotent>
         @csrf
         <h2 class="text-lg font-medium">
             Ingrese nuevo estado actual

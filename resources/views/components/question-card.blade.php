@@ -19,7 +19,7 @@
     <p>{{ $question->question }}</p>
 
     @if (auth()->user() && (auth()->user()->is($question->user) || auth()->user()->hasAnyRole(['owner', 'admin'])))
-        <form action="/Responder/{{ $question->id }}" method="POST" class="col-span-2 w-full flex justify-between gap-4">
+        <form action="/Responder/{{ $question->id }}" method="POST" class="col-span-2 w-full flex justify-between gap-4" data-idempotent>
             @csrf
             <x-forms.textarea class="w-full h-12" placeholder="Respuesta" name="answer" required></x-forms.textarea>
             <x-forms.button class="w-1/2 h-12 lg:w-1/5" :anchor="false">

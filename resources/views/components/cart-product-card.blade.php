@@ -21,7 +21,7 @@
             </div>
         </div>
         <div class="flex flex-row justify-between items-center">
-            <form class="flex flex-row gap-2" action="{{ route('cart.updateItemQuantity') }}" method="POST">
+            <form class="flex flex-row gap-2" action="{{ route('cart.updateItemQuantity') }}" method="POST" data-idempotent>
                 @csrf
                 @method('PATCH')
                 <div class="relative flex items-center max-w-[9rem] shadow-xs rounded-base">
@@ -32,7 +32,7 @@
                     Actualizar
                 </x-forms.button>
             </form>
-            <form class="flex flex-row gap-2" action="{{ route('cart.removeCartItem') }}" method="POST">
+            <form class="flex flex-row gap-2" action="{{ route('cart.removeCartItem') }}" method="POST" data-idempotent>
                 @csrf
                 @method('PATCH')
                 <input type="hidden" name="product_id" value="{{ $item['product']->id }}" />

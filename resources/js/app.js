@@ -1,4 +1,5 @@
 import './bootstrap';
+import './idempotency';
 import.meta.glob([
 '../images/**'
 ]);

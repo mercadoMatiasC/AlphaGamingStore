@@ -113,9 +113,7 @@ class ProductController extends Controller
     }
 
     public function show($id){
-        $product = Product::with(['type', 'category', 'questions' => function ($query) {
-                                                                        $query->with('answers')->where('active', true)->latest();
-                                                                    }])->findOrFail($id);
+        $product = Product::with(['type', 'category', 'questions' => function ($query) {$query->with('answers')->where('active', true)->latest();}])->findOrFail($id);
 
         $breadcrumbs = [
             [

@@ -14,7 +14,7 @@
         <x-forms.button class="w-[30%] lg:w-[20%]" colour="blue" x-data="" x-on:click.prevent="$dispatch('open-modal', 'edit-status-{{ $status->id }}')">
             Editar
         </x-forms.button>
-        <form class="flex w-1/2 justify-end lg:w-1/4" action="{{ route('ordertrackingstatus.destroy', $status) }}" method="POST">
+        <form class="flex w-1/2 justify-end lg:w-1/4" action="{{ route('ordertrackingstatus.destroy', $status) }}" method="POST" data-idempotent>
             @csrf
             @method('DELETE')
             <x-forms.button colour="red" class="w-[30%]" class="ml-3" onclick="return confirm('Esta acción no se puede deshacer. ¿Estás seguro de que querés continuar?')">
@@ -26,7 +26,7 @@
 </div>
 
 <x-modal name="edit-status-{{ $status->id }}" focusable class="bg-transparent">
-    <form method="POST" action="{{ route('ordertrackingstatus.update', $status) }}" class="p-6 bg-black">
+    <form method="POST" action="{{ route('ordertrackingstatus.update', $status) }}" class="p-6 bg-black" data-idempotent>
         @csrf
         @method('PATCH')
 

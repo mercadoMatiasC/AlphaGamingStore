@@ -1,10 +1,11 @@
 <?php
 
 use App\Http\Middleware\EnsureUserHasRole;
+use App\Http\Middleware\EnsureUserIsActive;
+use Infinitypaul\Idempotency\Middleware\EnsureIdempotency;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use App\Http\Middleware\EnsureUserIsActive;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -13,10 +14,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+
+        // Aliases (ex middleware de ruta)
         $middleware->alias([
             'active' => EnsureUserIsActive::class,
             'role'   => EnsureUserHasRole::class,
+            'idempotency' => EnsureIdempotency::class,
         ]);
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

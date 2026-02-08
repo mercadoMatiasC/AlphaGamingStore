@@ -33,5 +33,27 @@ class ShippingAddressSeeder extends Seeder
             'information' => 'Aplaudir o tocar bocina.',
             'active' => 1,
         ]);
+
+        ShippingAddress::create([
+            'user_id' => 3,
+            'province_id' => 17,
+            'city' => 'San Juan',
+            'postal_code' => '5400',
+            'address_street' => 'La Rioja',
+            'address_number' => '1903E',
+            'information' => 'Casa con rejas negras.',
+            'active' => 1,
+        ]);
+
+        ShippingAddress::create([
+            'user_id' => 4,
+            'province_id' => 1,
+            'city' => 'Hurlingham',
+            'postal_code' => '1100',
+            'address_street' => 'Dorrego',
+            'address_number' => '4031',
+            'information' => 'Departamento tocar timbre 2B.',
+            'active' => 1,
+        ]);
     }
 }

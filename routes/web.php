@@ -18,8 +18,8 @@ Route::get('/', [HomeController::class, 'index'])->name('Home');
 Route::controller(ProductController::class)->group(function (){
     //ONLY ADMIN/OWNER
     Route::middleware(['auth', 'active', 'role:admin,owner'])->group(function () {
-        Route::post ('/Producto', 'store');
-        Route::get  ('/Producto/Registrar', 'create')->name('product.create');;
+        Route::post ('/Producto', 'store')->middleware('idempotency');
+        Route::get  ('/Producto/Registrar', 'create')->name('product.create');
         Route::patch('/Producto/{product}/Actualizar', 'update');
         Route::patch('/Producto/{product}/Estado', 'toggleEnable');
         Route::get  ('/Producto/{id}/Editar', 'edit');
@@ -32,14 +32,14 @@ Route::controller(ProductController::class)->group(function (){
 //-- PRODUCT QUESTION --
 Route::controller(ProductQuestionController::class)->group(function (){
     Route::middleware(['auth', 'active'])->group(function () {
-        Route::post ('/Preguntar/{product}', 'store')->middleware(['role:customer']);
+        Route::post ('/Preguntar/{product}', 'store')->middleware('idempotency')->middleware(['role:customer']);
         Route::patch('/Preguntar/{question}/Eliminar', 'toggleEnable');
     });
 });
 
 //-- QUESTION ANSWER --
 Route::controller(ProductAnswersController::class)->group(function (){
-    Route::post ('/Responder/{question}', 'store')->middleware(['auth', 'active']);
+    Route::post ('/Responder/{question}', 'store')->middleware(['auth', 'active', 'idempotency']);
 });
 
 //-- PROFILE --
@@ -62,36 +62,35 @@ Route::middleware('auth')->group(function () {
     Route::patch('/Direccion/{address}/Estado', [ShippingAddressController::class,'toggleEnable']);
     Route::patch('/Direccion/{address}/Actualizar', [ShippingAddressController::class, 'update']);
     Route::get  ('/Direccion', [ShippingAddressController::class, 'create'])->name('address.create');
-    Route::post ('/Direccion', [ShippingAddressController::class, 'store'])->name('address.store');
+    Route::post ('/Direccion', [ShippingAddressController::class, 'store'])->middleware('idempotency')->name('address.store');
 });
 
 //-- CART --
 Route::middleware('auth')->group(function () {
     Route::get  ('/Carrito', [CartController::class, 'index'])->name('cart.index');
-    Route::post ('/Carrito/Agregar', [CartController::class, 'addCartItem'])->name('cart.addCartItem');
+    Route::post ('/Carrito/Agregar', [CartController::class, 'addCartItem'])->middleware('idempotency')->name('cart.addCartItem');
     Route::patch('/Carrito/Modificar', [CartController::class, 'updateItemQuantity'])->name('cart.updateItemQuantity');
-    Route::patch('/Carrito/Quitar', [CartController::class, 'removeCartItem'])->name('cart.removeCartItem');
+    Route::patch('/Carrito/Quitar', [CartController::class, 'removeCartItem'])->middleware('idempotency')->name('cart.removeCartItem');
     Route::patch('/Carrito/ModificarDireccion', [CartController::class, 'updatePreferredAddress'])->name('cart.updatePreferredAddress');
 });
 
 //-- ORDER --
 Route::middleware('auth')->group(function () {
     Route::get  ('/Ordenes', [OrderController::class, 'index'])->name('order.index');
-    Route::post ('/GenerarOrden', [OrderController::class, 'store'])->name('order.store');
+    Route::post ('/GenerarOrden', [OrderController::class, 'store'])->middleware('idempotency')->name('order.store');
 
      Route::middleware(['auth', 'active', 'role:admin,owner'])->group(function () {
-        
         Route::get  ('/Ordenes/{user}', [OrderController::class, 'clientIndex'])->name('order.clientIndex');
         Route::patch('/Orden/{order}/AgregarSeguimiento', [OrderController::class, 'setTrackingURL'])->name('order.setTrackingURL');
     });
 
     Route::get  ('/Orden/{order}', [OrderController::class, 'show'])->name('order.show');
-    Route::post ('/Orden/{order}/Cancelar', [OrderController::class, 'cancel'])->name('order.cancel');
+    Route::post ('/Orden/{order}/Cancelar', [OrderController::class, 'cancel'])->middleware('idempotency')->name('order.cancel');
 });
 
 //-- TRACKING STATUS --
 Route::middleware(['auth', 'active', 'role:admin,owner'])->group(function () {
-    Route::post  ('/Orden/{order}/AgregarEstado', [OrderTrackingStatusController::class, 'store'])->name('ordertrackingstatus.store');
+    Route::post  ('/Orden/{order}/AgregarEstado', [OrderTrackingStatusController::class, 'store'])->middleware('idempotency')->name('ordertrackingstatus.store');
     Route::delete('/EstadoEnvio/{status}/Eliminar', [OrderTrackingStatusController::class, 'destroy'])->name('ordertrackingstatus.destroy');
     Route::patch ('/EstadoEnvio/{status}/Actualizar', [OrderTrackingStatusController::class, 'update'])->name('ordertrackingstatus.update');
 });
