@@ -92,8 +92,8 @@
                         <div>
                             <form class="flex justify-end" method="POST" action="{{ route('order.store') }}" data-idempotent>
                                 @csrf
-                                <x-forms.button class="w-full" href="#" colour="purple" class="col-span-1">
-                                    Pagar
+                                <x-forms.button class="w-full" colour="purple" class="col-span-1">
+                                    Crear Orden
                                 </x-forms.button>
                             </form>
                         <div>

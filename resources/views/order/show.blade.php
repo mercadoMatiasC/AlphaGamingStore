@@ -25,7 +25,7 @@
                     <div class="flex justify-between">
                         <h1 class="text-xl">
                             Detalles de orden
-                        </h1>                        
+                        </h1>                      
                         <form method="POST" action="{{ route('order.cancel', $order) }}" data-idempotent>
                             @csrf
                             <x-forms.button class="w-full" colour="red" onclick="return confirm('¿Esta seguro de que quiere cancelar esta orden?')">
@@ -81,10 +81,37 @@
                             <p class="font-bold">
                                 Estado:
                             </p>
-                            <p class="font-semibold text-{{ $statuses[$order->status]['colour'] }}-600 text-xl">
-                                {{ $statuses[$order->status]['status']  }}
-                            </p>
+                            @anyrole('owner', 'admin')
+                                @if (!$cancelled)
+                                    <form method="POST" action="{{ route('order.statusswap', $order->id) }}" class="grid grid-cols-1 gap-3">
+                                        @csrf
+                                        @method('PATCH')
+                                        <x-forms.select :value="$order->status" name="status_id" :options="$order_statuses" onchange="this.form.submit()" required />
+                                    </form>
+                                @else
+                                    <p class="font-semibold text-{{ $statuses[$order->status]['colour'] }}-600 text-xl">
+                                        {{ $statuses[$order->status]['status']  }}
+                                    </p>
+                                @endif
+                            @else
+                                <p class="font-semibold text-{{ $statuses[$order->status]['colour'] }}-600 text-xl">
+                                    {{ $statuses[$order->status]['status']  }}
+                                </p>
+                            @endanyrole
                         </div>
+                        @if (session('error'))
+                            <x-error-card>
+                                {{ session('error') }}
+                            </x-error-card>
+                        @endif
+
+                        @if (!$paid)
+                        <div class="flex justify-end">
+                            <x-forms.button class="w-[25%]" colour="green" :anchor="1" href="{{ route('payment.create', $order) }}">
+                                Pagar
+                            </x-forms.button>
+                        </div>
+                        @endif
                     </div>
                 </div>
             </section>

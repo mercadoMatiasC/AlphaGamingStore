@@ -56,7 +56,7 @@
                         <p class="text-green-500">
                             {{ $product->stock }} unidad/es disponible/s.
                         </p>
-                        <form class="flex flex-row h-1/2 gap-2" action="{{ route('cart.addCartItem') }}" method="POST" data-idempotent>
+                        <form class="flex flex-row h-1/2 gap-2" action="{{ route('cart.addCartItem') }}" method="POST">
                             @csrf
                             <div class="relative flex items-center max-w-[9rem] shadow-xs rounded-base">
                                 <x-forms.number-button id="decrement-button" data-input-counter-decrement="quantity-input">-</x-forms.number-button>

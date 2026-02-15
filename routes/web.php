@@ -4,6 +4,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderTrackingStatusController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductAnswersController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductQuestionController;
@@ -18,7 +19,7 @@ Route::get('/', [HomeController::class, 'index'])->name('Home');
 Route::controller(ProductController::class)->group(function (){
     //ONLY ADMIN/OWNER
     Route::middleware(['auth', 'active', 'role:admin,owner'])->group(function () {
-        Route::post ('/Producto', 'store')->middleware('idempotency');
+        Route::post ('/Producto', 'store')->middleware('idempotency')->name('product.store');
         Route::get  ('/Producto/Registrar', 'create')->name('product.create');
         Route::patch('/Producto/{product}/Actualizar', 'update');
         Route::patch('/Producto/{product}/Estado', 'toggleEnable');
@@ -68,7 +69,7 @@ Route::middleware('auth')->group(function () {
 //-- CART --
 Route::middleware('auth')->group(function () {
     Route::get  ('/Carrito', [CartController::class, 'index'])->name('cart.index');
-    Route::post ('/Carrito/Agregar', [CartController::class, 'addCartItem'])->middleware('idempotency')->name('cart.addCartItem');
+    Route::post ('/Carrito/Agregar', [CartController::class, 'addCartItem'])->name('cart.addCartItem');
     Route::patch('/Carrito/Modificar', [CartController::class, 'updateItemQuantity'])->name('cart.updateItemQuantity');
     Route::patch('/Carrito/Quitar', [CartController::class, 'removeCartItem'])->middleware('idempotency')->name('cart.removeCartItem');
     Route::patch('/Carrito/ModificarDireccion', [CartController::class, 'updatePreferredAddress'])->name('cart.updatePreferredAddress');
@@ -79,14 +80,23 @@ Route::middleware('auth')->group(function () {
     Route::get  ('/Ordenes', [OrderController::class, 'index'])->name('order.index');
     Route::post ('/GenerarOrden', [OrderController::class, 'store'])->middleware('idempotency')->name('order.store');
 
-     Route::middleware(['auth', 'active', 'role:admin,owner'])->group(function () {
+    Route::middleware(['auth', 'active', 'role:admin,owner'])->group(function () {
         Route::get  ('/Ordenes/{user}', [OrderController::class, 'clientIndex'])->name('order.clientIndex');
         Route::patch('/Orden/{order}/AgregarSeguimiento', [OrderController::class, 'setTrackingURL'])->name('order.setTrackingURL');
+        Route::patch('/Orden/{order}/StatusSwap', [OrderController::class, 'statusswap'])->name('order.statusswap');
     });
 
     Route::get  ('/Orden/{order}', [OrderController::class, 'show'])->name('order.show');
     Route::post ('/Orden/{order}/Cancelar', [OrderController::class, 'cancel'])->middleware('idempotency')->name('order.cancel');
 });
+
+//-- PAYMENT --
+Route::middleware('auth')->group(function () {
+    Route::post ('/Orden/{order}/GenerarPago', [PaymentController::class, 'store'])->middleware('idempotency')->name('payment.store');
+    Route::get  ('/Orden/{order}/Pagar', [PaymentController::class, 'create'])->name('payment.create');
+
+});
+
 
 //-- TRACKING STATUS --
 Route::middleware(['auth', 'active', 'role:admin,owner'])->group(function () {

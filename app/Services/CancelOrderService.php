@@ -11,7 +11,7 @@ class CancelOrderService
 {
     public static function run(User $user, Order $order): Order
     {
-        if (! $order->canBeCancelled()) 
+        if (!$order->canChangeStatus()) 
             throw new DomainException('La orden no puede cancelarse');
         else
             return DB::transaction(function () use ($order) {

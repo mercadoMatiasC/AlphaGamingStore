@@ -7,10 +7,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#000000"> 
     <title>Alpha Gaming - {{ $title }}</title>
+
+    <style>
+        html, body {
+            background-color: #1A001A;
+        }
+    </style>
+
     <link rel="icon" href="{{ asset('images/brand/favicon.png') }}" type="image/x-icon">
     <link href='fonts.googleapis.com' rel='stylesheet'>
-    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/idempotency.js']) 
+    @vite(['resources/css/app.css', 'resources/js/app.js']) 
 </head>
+
 <body style="background-image: url('/images/background.jpg')" class="bg-cover text-white min-h-screen flex flex-col justify-between items-center">
     {{-- HEADER --}}
     <header style="background-image: url('/images/header.png')" class="gap-3 bg-cover bg-no-repeat w-full px-8 flex flex-col justify-between items-center lg:flex-row ">

@@ -13,6 +13,17 @@ use Illuminate\Support\Facades\Gate;
 
 class OrderController extends Controller
 {
+    public $order_statuses;
+
+    public function __construct() {
+        $this->order_statuses = array_map(function ($item) {
+            return [
+                    'id' => $item['id'], 
+                    'name' => $item['status']
+                   ];
+        }, config('order_statuses'));
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -53,8 +64,16 @@ class OrderController extends Controller
 
         $tracking_statuses = $order->orderTrackingStatuses;
         $items = $order->orderItems()->with('product')->paginate(3);
+        $cancelled = $order->status == Order::CANCELLED;
+        $paid = $order->status == Order::PAID;
 
-        return view('order.show', ['order' => $order,'items' => $items, 'statuses' => config('order_statuses'), 'tracking_statuses' => $tracking_statuses,]);
+        return view('order.show', ['order' => $order,
+                                   'items' => $items, 
+                                   'statuses' => config('order_statuses'), 
+                                   'tracking_statuses' => $tracking_statuses, 
+                                   'order_statuses' => $this->order_statuses,
+                                   'cancelled' => $cancelled,
+                                   'paid' => $paid]);
     }
 
     /**
@@ -72,13 +91,16 @@ class OrderController extends Controller
     }
 
     // -- NON CRUD METHODS --
-    public function cancel(Order $order){
-        Gate::authorize('cancel', $order);
-        CancelOrderService::run(Auth::user(), $order);
-
-        $order->addTrackingStatus('La orden ha sido cancelada por el cliente.');
-
-        return redirect()->route('order.show', $order)->with('success', 'Orden cancelada correctamente!');
+    public function cancel(Order $order, $message = 'La orden ha sido cancelada por el cliente.'){
+        try {
+            Gate::authorize('cancel', $order);
+            CancelOrderService::run(Auth::user(), $order);
+            $order->addTrackingStatus($message);
+            
+            return back();
+        } catch (DomainException $e) {
+            return back()->withErrors(['error' => $e->getMessage(),]);
+        }
     }
 
     public function clientIndex(User $user){
@@ -98,6 +120,21 @@ class OrderController extends Controller
         $order->update($validatedInput);
         
         //REDIRECT
+        return back();
+    }
+
+    public function statusswap(Request $request, Order $order){
+        if (!$order->canChangeStatus())
+            return back()->withErrors(['order' => 'No se puede modificar una orden cancelada!.',]);
+        else
+            match ((int) $request->status_id) {
+                0 => $order->setPending(),
+                1 => $order->setPaid(),
+                2 => $this->cancel($order, 'La orden ha sido cancelada por un miembro del staff.'),
+                3 => $order->setDelivered(),
+                default => null,
+            };
+
         return back();
     }
 }

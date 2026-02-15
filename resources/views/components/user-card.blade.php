@@ -24,7 +24,7 @@
                 <form method="POST" action="{{ route('profile.roleswap', $user->id) }}" class="grid grid-cols-1 gap-3">
                     @csrf
                     @method('PATCH')
-                    <x-forms.select :value="$user->role_id" name="role_id" :options="$roles" nullable onchange="this.form.submit()" required />
+                    <x-forms.select :value="$user->role_id" name="role_id" :options="$roles" onchange="this.form.submit()" required />
                 </form>
             @endrole
             {{-- KEEP THE QUERY --}}
