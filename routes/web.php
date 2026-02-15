@@ -9,6 +9,7 @@ use App\Http\Controllers\ProductAnswersController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductQuestionController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RefundController;
 use App\Http\Controllers\ShippingAddressController;
 use Illuminate\Support\Facades\Route;
 
@@ -95,8 +96,15 @@ Route::middleware('auth')->group(function () {
     Route::post ('/Orden/{order}/GenerarPago', [PaymentController::class, 'store'])->middleware('idempotency')->name('payment.store');
     Route::get  ('/Orden/{order}/Pagar', [PaymentController::class, 'create'])->name('payment.create');
 
+    Route::middleware(['active', 'role:admin,owner'])->group(function () {
+        Route::post('/Pago/{payment}/CambiarEstado', [PaymentController::class, 'changeStatus'])->name('payment.changeStatus');
+    });
 });
 
+//-- REFUND --
+Route::middleware(['active', 'role:admin,owner', 'auth'])->group(function () {
+    Route::get('/Orden/{order}/Reembolsos', [RefundController::class, 'index'])->name('refund.index');
+});
 
 //-- TRACKING STATUS --
 Route::middleware(['auth', 'active', 'role:admin,owner'])->group(function () {

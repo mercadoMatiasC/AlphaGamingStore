@@ -9,11 +9,13 @@ use App\Services\PlaceOrderService;
 use DomainException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth as FacadesAuth;
 use Illuminate\Support\Facades\Gate;
 
 class OrderController extends Controller
 {
     public $order_statuses;
+    public $payment_statuses;
 
     public function __construct() {
         $this->order_statuses = array_map(function ($item) {
@@ -22,7 +24,16 @@ class OrderController extends Controller
                     'name' => $item['status']
                    ];
         }, config('order_statuses'));
+
+        $this->payment_statuses = array_map(function ($item) {
+            return [
+                    'id' => $item['id'], 
+                    'name' => $item['status']
+                   ];
+        }, config('payment_statuses'));
     }
+
+
 
     /**
      * Display a listing of the resource.
@@ -65,15 +76,19 @@ class OrderController extends Controller
         $tracking_statuses = $order->orderTrackingStatuses;
         $items = $order->orderItems()->with('product')->paginate(3);
         $cancelled = $order->status == Order::CANCELLED;
-        $paid = $order->status == Order::PAID;
+        $payments = $order->payments;
+        $payable = $order->user->is(Auth::user());
 
         return view('order.show', ['order' => $order,
                                    'items' => $items, 
-                                   'statuses' => config('order_statuses'), 
+                                   'order_base_statuses' => config('order_statuses'), 
+                                   'payment_base_statuses' => config('payment_statuses'),
                                    'tracking_statuses' => $tracking_statuses, 
                                    'order_statuses' => $this->order_statuses,
+                                   'payment_statuses' => $this->payment_statuses,
                                    'cancelled' => $cancelled,
-                                   'paid' => $paid]);
+                                   'payments' => $payments,
+                                   'payable' => $payable,]);
     }
 
     /**

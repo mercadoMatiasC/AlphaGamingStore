@@ -89,13 +89,13 @@
                                         <x-forms.select :value="$order->status" name="status_id" :options="$order_statuses" onchange="this.form.submit()" required />
                                     </form>
                                 @else
-                                    <p class="font-semibold text-{{ $statuses[$order->status]['colour'] }}-600 text-xl">
-                                        {{ $statuses[$order->status]['status']  }}
+                                    <p class="font-semibold text-{{ $order_base_statuses[$order->status]['colour'] }}-600 text-xl">
+                                        {{ $order_base_statuses[$order->status]['status']  }}
                                     </p>
                                 @endif
                             @else
-                                <p class="font-semibold text-{{ $statuses[$order->status]['colour'] }}-600 text-xl">
-                                    {{ $statuses[$order->status]['status']  }}
+                                <p class="font-semibold text-{{ $order_base_statuses[$order->status]['colour'] }}-600 text-xl">
+                                    {{ $order_base_statuses[$order->status]['status']  }}
                                 </p>
                             @endanyrole
                         </div>
@@ -105,13 +105,17 @@
                             </x-error-card>
                         @endif
 
-                        @if (!$paid)
-                        <div class="flex justify-end">
-                            <x-forms.button class="w-[25%]" colour="green" :anchor="1" href="{{ route('payment.create', $order) }}">
-                                Pagar
-                            </x-forms.button>
+                        <div class="flex flex-col gap-4 lg:flex-row lg:justify-between">
+                            <x-forms.button class="w-full lg:w-[25%]" colour="blue" x-data="" x-on:click.prevent="$dispatch('open-modal', 'see-order-payments')">
+                                Ver Pagos
+                            </x-forms.button>      
+
+                            @if ($order->canBePaid() && $payable)
+                                <x-forms.button class="w-full lg:w-[25%]" colour="green" :anchor="1" href="{{ route('payment.create', $order) }}">
+                                    Pagar
+                                </x-forms.button>
+                            @endif
                         </div>
-                        @endif
                     </div>
                 </div>
             </section>
@@ -215,4 +219,33 @@
             </div>
         </div>
     </form>
+</x-modal>
+
+<x-modal name="see-order-payments" focusable class="bg-transparent">
+    <div class="p-6 bg-black">
+        <div class="flex flex-row justify-between">
+            <h2 class="text-lg font-medium">
+                Pagos
+            </h2>
+            @anyrole('owner', 'admin')
+                @if ($payments->isNotEmpty())
+                <x-forms.button class="w-full lg:w-[25%]" colour="blue" target="_blank" :anchor="1" href="{{ route('refund.index', $order) }}">
+                    Reembolsos
+                </x-forms.button>   
+                @endif
+            @endanyrole
+        </div>
+
+        <div class="mt-6 flex justify-center mx-auto">
+            @if ($payments->isNotEmpty())
+                @foreach ($payments as $payment)
+                    <x-payment-card :payment="$payment" :payment_base_statuses="$payment_base_statuses" :payment_statuses="$payment_statuses"/>
+                @endforeach
+            @else
+                <p class="font-bold">
+                    ¡No se han registrado pagos!
+                </p>
+            @endif
+        </div>
+    </div>
 </x-modal>

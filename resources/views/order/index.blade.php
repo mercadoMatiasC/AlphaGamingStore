@@ -12,7 +12,7 @@
             <x-section-header>
                 Pedidos
                     @anyrole(['owner', 'admin']) 
-                        ({{ 'ID: '.$user->id.' - '.$user->name }})
+                        ({{ 'ID: #'.$user->id.' - '.$user->name }})
                     @endanyrole
             </x-section-header>      
             <x-divider class="lg:hidden" />

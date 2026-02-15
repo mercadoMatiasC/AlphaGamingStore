@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Services\CheckoutService;
+use App\Services\RefundPaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -12,14 +13,6 @@ use Illuminate\Support\Str;
 
 class PaymentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
     /**
      * Show the form for creating a new resource.
      */
@@ -39,40 +32,32 @@ class PaymentController extends Controller
         ]);
 
         $validated_data['external_id'] = (string) Str::uuid();
-        CheckoutService::run($order, $validated_data);
+        $response = CheckoutService::run($order, $validated_data);
 
-        return redirect()->route('order.show', $order);
+        return redirect()->route('order.show', $order)->with('response', $response);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Payment $payment)
-    {
-        //
-    }
+    // -- NON CRUD METHODS --
+    public function changeStatus(Request $request, Payment $payment){
+        if ($payment->canChangeStatus()){
+            $response = true;
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Payment $payment)
-    {
-        //
-    }
+            $validated_data = $request->validate([
+                'status_id' => 'required',
+            ]);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Payment $payment)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Payment $payment)
-    {
-        //
+            if ($validated_data['status_id'] == Payment::REFUNDED){
+                $external_id = (string) Str::uuid();
+                $response = RefundPaymentService::run($payment, $external_id);
+            }else
+                match ((int) $request->status_id) {
+                    Payment::PENDING => $payment->setPending(),
+                    Payment::COMPLETED => $payment->setCompleted(),
+                    Payment::CANCELLED => $payment->setCancelled(),
+                    Payment::REJECTED => $payment->setRejected(),
+                    default => null,
+                };
+        }
+        return redirect()->route('order.show', $payment->order)->with('response', $response);
     }
 }

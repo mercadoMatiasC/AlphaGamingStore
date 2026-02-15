@@ -7,7 +7,7 @@
             ],
         1  =>  [
                 'id' => 1,
-                'status' => 'Pagado',
+                'status' => 'Completado',
                 'colour' => 'green'
             ],
         2  =>  [
@@ -17,17 +17,12 @@
             ],
         3  =>  [
                 'id' => 3,
-                'status' => 'Entregado',
+                'status' => 'Reembolsado',
                 'colour' => 'green'
             ],
         4  =>  [
                 'id' => 4,
-                'status' => 'Pago parcial',
+                'status' => 'Rechazado',
                 'colour' => 'orange'
-            ],
-        5  =>  [
-                'id' => 5,
-                'status' => 'Sobrepagado',
-                'colour' => 'yellow'
-            ],        
+            ], 
     ];

@@ -42,7 +42,7 @@
                 </div>
             </section>
 
-             <section class="flex flex-col bg-gray-100/90 rounded-md p-6 space-y-6 text-sm md:text-lg">
+             <section class="flex flex-col bg-white/90 rounded-md p-6 space-y-6 text-sm md:text-lg">
                 <div class="flex flex-row justify-between">
                     <p>
                         ¿Cómo quieres pagar?

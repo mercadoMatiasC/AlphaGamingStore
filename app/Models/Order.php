@@ -9,9 +9,9 @@ class Order extends Model
     public const PENDING = 0;
     public const PAID = 1;
     public const CANCELLED = 2;
-    public const PARTIAL = 3;
-    public const OVERPAID = 4;
-    public const DELIVERED = 5;
+    public const DELIVERED = 3;
+    public const PARTIAL = 4;
+    public const OVERPAID = 5;
 
     protected $attributes = [
         'shipping_cost' => 0,
@@ -35,6 +35,13 @@ class Order extends Model
 
     public function payments(){
         return $this->hasMany(Payment::class);
+    }
+
+    public function refunds(){
+        return $this->hasManyThrough(
+            Refund::class,
+            Payment::class
+        );
     }
 
     // -- OTHER METHODS --
