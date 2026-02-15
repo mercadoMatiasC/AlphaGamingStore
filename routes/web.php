@@ -79,7 +79,7 @@ Route::middleware('auth')->group(function () {
 //-- ORDER --
 Route::middleware('auth')->group(function () {
     Route::get  ('/Ordenes', [OrderController::class, 'index'])->name('order.index');
-    Route::post ('/GenerarOrden', [OrderController::class, 'store'])->middleware('idempotency')->name('order.store');
+    Route::post ('/GenerarOrden', [OrderController::class, 'store'])->name('order.store'); //->middleware('idempotency')
 
     Route::middleware(['auth', 'active', 'role:admin,owner'])->group(function () {
         Route::get  ('/Ordenes/{user}', [OrderController::class, 'clientIndex'])->name('order.clientIndex');

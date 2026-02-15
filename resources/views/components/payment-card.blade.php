@@ -16,7 +16,7 @@
         <p class="text-black w-full">
             Monto: ${{ number_format($payment->amount, 0, '.', ',') }}
         </p>
-        @anyrole('owner', 'admin')
+        @anyrole(['owner', 'admin']) 
             @if ($payment->canChangeStatus())
             <form method="POST" action="{{ route('payment.changeStatus', $payment) }}" class="flex flex-row w-full justify-end gap-3">
                 @csrf

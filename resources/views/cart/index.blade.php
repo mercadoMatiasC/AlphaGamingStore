@@ -9,7 +9,7 @@
                     Carrito
                 </x-section-header> 
                 <div class="mt-6 flex flex-col gap-3">
-                    @if (session('error'))
+                    @if(session('error'))
                         <x-error-card>
                             {{ session('error') }}
                         </x-error-card>
@@ -90,7 +90,7 @@
                         </div>
     
                         <div>
-                            <form class="flex justify-end" method="POST" action="{{ route('order.store') }}" data-idempotent>
+                            <form class="flex justify-end" method="POST" action="{{ route('order.store') }}" {{--  data-idempotent --}} >
                                 @csrf
                                 <x-forms.button class="w-full" colour="purple" class="col-span-1">
                                     Crear Orden

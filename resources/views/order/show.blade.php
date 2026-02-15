@@ -227,7 +227,7 @@
             <h2 class="text-lg font-medium">
                 Pagos
             </h2>
-            @anyrole('owner', 'admin')
+            @anyrole(['owner', 'admin'])
                 @if ($payments->isNotEmpty())
                 <x-forms.button class="w-full lg:w-[25%]" colour="blue" target="_blank" :anchor="1" href="{{ route('refund.index', $order) }}">
                     Reembolsos

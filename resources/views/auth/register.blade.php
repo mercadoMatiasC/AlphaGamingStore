@@ -11,7 +11,7 @@
 
     <div class="flex flex-col justify-center mx-auto mb-10 md:w-3/4 lg:w-2/5">
         <section class="bg-white/10 p-8 w-full">
-            <form method="POST" action="{{ route('register') }}" class="grid grid-cols-1 gap-4 space-y-2" enctype="multipart/form-data" data-idempotent>
+            <form method="POST" action="{{ route('register') }}" class="grid grid-cols-1 gap-4 space-y-2" enctype="multipart/form-data">
                 @csrf
                 <x-forms.input :value="old('name')" label="Nombre" name="name" required />
                 <x-forms.input :value="old('email')" label="Email" type="email" name="email" required />

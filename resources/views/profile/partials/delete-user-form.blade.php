@@ -45,4 +45,5 @@
             </div>
         </div>
     </form>
+    <x-errors-display />
 </x-modal>

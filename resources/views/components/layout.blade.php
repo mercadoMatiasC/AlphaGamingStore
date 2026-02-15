@@ -47,7 +47,6 @@
             <x-li><a href="/Productos?ofertas=1">Ofertas</a></x-li>
             <x-li><a href="/Productos?grupo=componentes">Componentes</a></x-li>
             <x-li><a href="/Productos?grupo=pcs">Computadoras</a></x-li>
-            <x-li><a href="/Productos?builder=1">Armá tu PC</a></x-li>
             <x-li><a href="/Productos?categoria=notebooks">Notebooks</a></x-li>
             <x-li><a href="/Productos?categoria=gpu">Tarjetas de video</a></x-li>
             <x-li><a href="/Productos?categoria=cpu">Procesadores</a></x-li>
